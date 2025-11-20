@@ -1,0 +1,110 @@
+.report-page {
+  padding: 15px 20px 80px 20px;
+  background-color: #f5f5f5;
+}
+
+.report-header {
+  margin-bottom: 20px;
+}
+
+.report-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.report-header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.summary-card {
+  margin-bottom: 15px;
+}
+
+.summary-grid {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.summary-icon {
+  font-size: 32px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.summary-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.summary-evaluation {
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.summary-evaluation p {
+  font-size: 15px;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.chart-card {
+  margin-bottom: 15px;
+  padding: 15px;
+}
+
+.daily-details {
+  margin-bottom: 15px;
+}
+
+.daily-details h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.daily-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.daily-day {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.daily-stats {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.report-actions {
+  padding: 20px 0;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}

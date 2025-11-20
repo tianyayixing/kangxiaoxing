@@ -1,0 +1,149 @@
+.dish-selection-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+.selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.selection-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.header-back {
+  font-size: 24px;
+  padding: 5px;
+}
+
+.header-manage {
+  font-size: 24px;
+  padding: 5px;
+}
+
+.category-tabs {
+  padding: 15px 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.category-tab {
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 60px;
+  text-align: center;
+}
+
+.category-tab.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.dish-grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  align-content: start;
+}
+
+.dish-card {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  position: relative;
+}
+
+.dish-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.dish-card.selected {
+  border-color: var(--primary-color);
+  background-color: rgba(22, 119, 255, 0.05);
+}
+
+.dish-card.selected .selection-check {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+}
+
+.dish-card-emoji {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.dish-card-name {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--text-color);
+  word-break: break-word;
+  width: 100%;
+}
+
+.dish-card-calories {
+  font-size: 13px;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.dish-card-category {
+  font-size: 11px;
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.selection-footer {
+  padding: 15px 20px;
+  border-top: 1px solid var(--border-color);
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selected-count {
+  font-size: 14px;
+  color: var(--text-secondary);
+}

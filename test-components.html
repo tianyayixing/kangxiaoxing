@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组件测试</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd-mobile@5.41.1/bundle/style.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+                'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>组件测试页面</h1>
+        <div id="test-content"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/antd-mobile@5.41.1/bundle/antd-mobile.js"></script>
+    <script>
+        // 测试Ant Design Mobile组件
+        const { Button, Card, NavBar } = antdMobile;
+        
+        function TestApp() {
+            return React.createElement('div', null,
+                React.createElement(NavBar, { back: null }, '测试页面'),
+                React.createElement(Card, { title: '测试卡片' },
+                    React.createElement('p', null, '如果能看到这个内容，说明Ant Design Mobile正常工作'),
+                    React.createElement(Button, { color: 'primary' }, '测试按钮')
+                )
+            );
+        }
+        
+        const root = ReactDOM.createRoot(document.getElementById('test-content'));
+        root.render(React.createElement(TestApp));
+    </script>
+</body>
+</html>

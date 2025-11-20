@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>App Debug</title>
+</head>
+<body>
+    <h1>App Debug</h1>
+    <button onclick="checkApp()">检查应用状态</button>
+    <button onclick="clearData()">清空数据</button>
+    <div id="output"></div>
+
+    <script>
+        function checkApp() {
+            const output = document.getElementById('output');
+            try {
+                // 检查localStorage中的数据
+                const keys = ['first_launch', 'user_settings', 'diet_plan'];
+                let result = '<h2>应用数据状态:</h2>';
+                
+                keys.forEach(key => {
+                    const data = localStorage.getItem(key);
+                    if (data) {
+                        try {
+                            // 尝试解析JSON数据
+                            const parsed = JSON.parse(data);
+                            result += `<p><strong>${key}:</strong> ${JSON.stringify(parsed)}</p>`;
+                        } catch (e) {
+                            // 如果不是JSON格式，直接显示
+                            result += `<p><strong>${key}:</strong> ${data}</p>`;
+                        }
+                    } else {
+                        result += `<p><strong>${key}:</strong> 无数据</p>`;
+                    }
+                });
+                
+                // 检查加密数据
+                const encryptedKeys = ['user_settings', 'diet_plan'];
+                result += '<h2>加密数据检查:</h2>';
+                
+                encryptedKeys.forEach(key => {
+                    const data = localStorage.getItem(key);
+                    if (data) {
+                        result += `<p><strong>${key}:</strong> 存在加密数据 (${data.substring(0, 50)}...)</p>`;
+                    } else {
+                        result += `<p><strong>${key}:</strong> 无数据</p>`;
+                    }
+                });
+                
+                output.innerHTML = result;
+            } catch (error) {
+                output.innerHTML = `<p>错误: ${error.message}</p>`;
+            }
+        }
+        
+        function clearData() {
+            const keys = ['first_launch', 'user_settings', 'diet_plan', 'dish_history', 'weekly_reports', 'custom_dishes', 'deleted_system_dishes', 'modified_system_dishes'];
+            keys.forEach(key => {
+                localStorage.removeItem(key);
+            });
+            document.getElementById('output').innerHTML = '<p>数据已清空</p>';
+        }
+    </script>
+</body>
+</html>

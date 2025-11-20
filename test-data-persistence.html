@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>测试数据持久化</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .danger {
+            background-color: #dc3545;
+        }
+        .danger:hover {
+            background-color: #c82333;
+        }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>测试数据持久化</h1>
+    
+    <div class="section">
+        <h2>操作</h2>
+        <button onclick="saveTestData()">保存测试数据</button>
+        <button onclick="loadTestData()">加载测试数据</button>
+        <button onclick="clearTestData()" class="danger">清空测试数据</button>
+    </div>
+    
+    <div class="section">
+        <h2>结果</h2>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // 存储键名
+        const STORAGE_KEYS = {
+            DIET_PLAN: 'diet_plan',
+        };
+        
+        // 保存测试数据
+        function saveTestData() {
+            const output = document.getElementById('output');
+            try {
+                // 创建测试数据
+                const testData = {
+                    "周一": {
+                        breakfast: [{ id: 1, name: "煎蛋", calories: 155 }],
+                        lunch: [{ id: 19, name: "鸡胸肉", calories: 165 }],
+                        dinner: [{ id: 31, name: "番茄炒蛋", calories: 120 }],
+                        snack: [{ id: 26, name: "苹果", calories: 52 }]
+                    },
+                    "周二": {
+                        breakfast: [],
+                        lunch: [],
+                        dinner: [],
+                        snack: []
+                    }
+                };
+                
+                // 保存到localStorage
+                localStorage.setItem(STORAGE_KEYS.DIET_PLAN, JSON.stringify(testData));
+                
+                output.innerHTML = `<h3>测试数据已保存:</h3><pre>${JSON.stringify(testData, null, 2)}</pre>`;
+            } catch (error) {
+                output.innerHTML = `<p>保存测试数据时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 加载测试数据
+        function loadTestData() {
+            const output = document.getElementById('output');
+            try {
+                // 从localStorage加载
+                const data = localStorage.getItem(STORAGE_KEYS.DIET_PLAN);
+                if (data) {
+                    const parsedData = JSON.parse(data);
+                    output.innerHTML = `<h3>加载的测试数据:</h3><pre>${JSON.stringify(parsedData, null, 2)}</pre>`;
+                } else {
+                    output.innerHTML = `<p>无测试数据</p>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<p>加载测试数据时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 清空测试数据
+        function clearTestData() {
+            const output = document.getElementById('output');
+            try {
+                localStorage.removeItem(STORAGE_KEYS.DIET_PLAN);
+                output.innerHTML = '<p>测试数据已清空</p>';
+            } catch (error) {
+                output.innerHTML = `<p>清空测试数据时出错: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

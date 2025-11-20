@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug LocalStorage</title>
+</head>
+<body>
+    <h1>LocalStorage Debug</h1>
+    <button onclick="checkData()">检查数据</button>
+    <button onclick="clearData()">清空数据</button>
+    <div id="output"></div>
+
+    <script>
+        function checkData() {
+            const output = document.getElementById('output');
+            try {
+                // 检查所有相关的存储键
+                const keys = ['diet_plan', 'user_settings', 'first_launch'];
+                let result = '<h2>存储数据检查结果:</h2>';
+                
+                keys.forEach(key => {
+                    const data = localStorage.getItem(key);
+                    if (data) {
+                        try {
+                            // 尝试解密数据
+                            const decrypted = decrypt(data);
+                            result += `<p><strong>${key}:</strong></p><pre>${JSON.stringify(JSON.parse(decrypted), null, 2)}</pre>`;
+                        } catch (e) {
+                            result += `<p><strong>${key}:</strong> ${data} (无法解密: ${e.message})</p>`;
+                        }
+                    } else {
+                        result += `<p><strong>${key}:</strong> 无数据</p>`;
+                    }
+                });
+                
+                output.innerHTML = result;
+            } catch (error) {
+                output.innerHTML = `<p>错误: ${error.message}</p>`;
+            }
+        }
+        
+        function clearData() {
+            const keys = ['diet_plan', 'user_settings', 'first_launch', 'dish_history', 'weekly_reports', 'custom_dishes', 'deleted_system_dishes', 'modified_system_dishes'];
+            keys.forEach(key => {
+                localStorage.removeItem(key);
+            });
+            document.getElementById('output').innerHTML = '<p>数据已清空</p>';
+        }
+        
+        // 解密函数（简化版，仅用于调试）
+        function decrypt(ciphertext) {
+            // 这里只是一个示例，实际的解密需要CryptoJS库
+            return atob(ciphertext); // 简单的base64解码作为示例
+        }
+    </script>
+</body>
+</html>

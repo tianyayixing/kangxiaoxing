@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug LocalStorage Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .danger {
+            background-color: #dc3545;
+        }
+        .danger:hover {
+            background-color: #c82333;
+        }
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>LocalStorage Debug & Fix</h1>
+    
+    <div class="section">
+        <h2>检查数据</h2>
+        <button onclick="checkData()">检查所有数据</button>
+        <button onclick="checkDietPlan()">检查饮食计划</button>
+        <button onclick="checkUserSettings()">检查用户设置</button>
+    </div>
+    
+    <div class="section">
+        <h2>修复数据</h2>
+        <button onclick="fixDietPlanData()">修复饮食计划数据</button>
+        <button onclick="restoreSampleData()" class="danger">恢复示例数据</button>
+    </div>
+    
+    <div class="section">
+        <h2>清空数据</h2>
+        <button onclick="clearAllData()" class="danger">清空所有数据</button>
+    </div>
+    
+    <div id="output"></div>
+
+    <script>
+        // 密钥（与应用中一致）
+        const SECRET_KEY = 'diet-manager-secret-key-2024';
+        
+        // 存储键名
+        const STORAGE_KEYS = {
+            USER_SETTINGS: 'user_settings',
+            DIET_PLAN: 'diet_plan',
+            DISH_HISTORY: 'dish_history',
+            WEEKLY_REPORTS: 'weekly_reports',
+            FIRST_LAUNCH: 'first_launch',
+            CUSTOM_DISHES: 'custom_dishes',
+            DELETED_SYSTEM_DISHES: 'deleted_system_dishes',
+            MODIFIED_SYSTEM_DISHES: 'modified_system_dishes'
+        };
+        
+        // 引入CryptoJS库
+        function loadCryptoJS() {
+            return new Promise((resolve, reject) => {
+                if (window.CryptoJS) {
+                    resolve();
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+        
+        // 加密数据
+        function encrypt(data) {
+            if (!window.CryptoJS) {
+                throw new Error('CryptoJS未加载');
+            }
+            const jsonStr = JSON.stringify(data);
+            return CryptoJS.AES.encrypt(jsonStr, SECRET_KEY).toString();
+        }
+        
+        // 解密数据
+        function decrypt(ciphertext) {
+            if (!window.CryptoJS) {
+                throw new Error('CryptoJS未加载');
+            }
+            try {
+                const bytes = CryptoJS.AES.decrypt(ciphertext, SECRET_KEY);
+                const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+                return JSON.parse(decryptedData);
+            } catch (error) {
+                console.error('解密失败:', error);
+                return null;
+            }
+        }
+        
+        // 检查所有数据
+        async function checkData() {
+            await loadCryptoJS();
+            const output = document.getElementById('output');
+            try {
+                let result = '<h2>存储数据检查结果:</h2>';
+                
+                Object.entries(STORAGE_KEYS).forEach(([key, storageKey]) => {
+                    const data = localStorage.getItem(storageKey);
+                    if (data) {
+                        try {
+                            const decrypted = decrypt(data);
+                            result += `<p><strong>${key} (${storageKey}):</strong></p><pre>${JSON.stringify(decrypted, null, 2)}</pre>`;
+                        } catch (e) {
+                            result += `<p><strong>${key} (${storageKey}):</strong> ${data} (无法解密: ${e.message})</p>`;
+                        }
+                    } else {
+                        result += `<p><strong>${key} (${storageKey}):</strong> 无数据</p>`;
+                    }
+                });
+                
+                output.innerHTML = result;
+            } catch (error) {
+                output.innerHTML = `<p>错误: ${error.message}</p>`;
+            }
+        }
+        
+        // 检查饮食计划
+        async function checkDietPlan() {
+            await loadCryptoJS();
+            const output = document.getElementById('output');
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.DIET_PLAN);
+                if (data) {
+                    try {
+                        const decrypted = decrypt(data);
+                        output.innerHTML = `<h2>饮食计划数据:</h2><pre>${JSON.stringify(decrypted, null, 2)}</pre>`;
+                    } catch (e) {
+                        output.innerHTML = `<p>饮食计划数据无法解密: ${e.message}</p>`;
+                    }
+                } else {
+                    output.innerHTML = `<p>无饮食计划数据</p>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<p>检查饮食计划时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 检查用户设置
+        async function checkUserSettings() {
+            await loadCryptoJS();
+            const output = document.getElementById('output');
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.USER_SETTINGS);
+                if (data) {
+                    try {
+                        const decrypted = decrypt(data);
+                        output.innerHTML = `<h2>用户设置数据:</h2><pre>${JSON.stringify(decrypted, null, 2)}</pre>`;
+                    } catch (e) {
+                        output.innerHTML = `<p>用户设置数据无法解密: ${e.message}</p>`;
+                    }
+                } else {
+                    output.innerHTML = `<p>无用户设置数据</p>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<p>检查用户设置时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 修复饮食计划数据
+        async function fixDietPlanData() {
+            await loadCryptoJS();
+            const output = document.getElementById('output');
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.DIET_PLAN);
+                if (data) {
+                    try {
+                        const decrypted = decrypt(data);
+                        // 确保数据结构正确
+                        const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                        const mealTypes = ['breakfast', 'lunch', 'dinner', 'snack'];
+                        
+                        // 初始化数据结构
+                        const fixedPlan = {};
+                        days.forEach(day => {
+                            if (!decrypted[day]) {
+                                fixedPlan[day] = {};
+                                mealTypes.forEach(meal => {
+                                    fixedPlan[day][meal] = [];
+                                });
+                            } else {
+                                fixedPlan[day] = {};
+                                mealTypes.forEach(meal => {
+                                    fixedPlan[day][meal] = decrypted[day][meal] || [];
+                                });
+                            }
+                        });
+                        
+                        // 保存修复后的数据
+                        const encrypted = encrypt(fixedPlan);
+                        localStorage.setItem(STORAGE_KEYS.DIET_PLAN, encrypted);
+                        
+                        output.innerHTML = `<h2>饮食计划数据已修复:</h2><pre>${JSON.stringify(fixedPlan, null, 2)}</pre>`;
+                    } catch (e) {
+                        output.innerHTML = `<p>修复饮食计划数据时出错: ${e.message}</p>`;
+                    }
+                } else {
+                    output.innerHTML = `<p>无饮食计划数据需要修复</p>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<p>修复饮食计划时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 恢复示例数据
+        async function restoreSampleData() {
+            await loadCryptoJS();
+            const output = document.getElementById('output');
+            try {
+                // 示例用户设置
+                const sampleSettings = {
+                    name: "张三",
+                    age: 25,
+                    weight: 65,
+                    height: 170,
+                    dietPreference: ["omnivore"],
+                    dietGoal: "maintain",
+                    healthStatus: "normal",
+                    allergies: []
+                };
+                
+                // 示例饮食计划
+                const samplePlan = {
+                    "周一": {
+                        breakfast: [{ id: 1, name: "煎蛋", category: "早餐", calories: 155, protein: 13, fat: 11, carbs: 1, fiber: 0, vitaminC: 0, vitaminB: 8, image: "🍳", cookingMethod: "热锅加油，打入鸡蛋，煎至两面金黄", effect: "富含蛋白质，提供能量" }],
+                        lunch: [{ id: 19, name: "鸡胸肉", category: "肉类", calories: 165, protein: 31, fat: 3.6, carbs: 0, fiber: 0, vitaminC: 0, vitaminB: 25, image: "🍗", cookingMethod: "煎、煮或烤", effect: "低脂高蛋白，适合健身" }],
+                        dinner: [{ id: 31, name: "番茄炒蛋", category: "家常菜", calories: 120, protein: 8, fat: 7, carbs: 8, fiber: 1.5, vitaminC: 12, vitaminB: 10, image: "🍳", cookingMethod: "先炒蛋后炒番茄", effect: "营养均衡，易消化" }],
+                        snack: [{ id: 26, name: "苹果", category: "水果", calories: 52, protein: 0.3, fat: 0.2, carbs: 14, fiber: 2.4, vitaminC: 5, vitaminB: 3, image: "🍎", cookingMethod: "直接食用", effect: "促进消化，补充维生素" }]
+                    },
+                    "周二": {
+                        breakfast: [],
+                        lunch: [],
+                        dinner: [],
+                        snack: []
+                    },
+                    "周三": {
+                        breakfast: [],
+                        lunch: [],
+                        dinner: [],
+                        snack: []
+                    },
+                    "周四": {
+                        breakfast: [],
+                        lunch: [],
+                        dinner: [],
+                        snack: []
+                    },
+                    "周五": {
+                        breakfast: [],
+                        lunch: [],
+                        dinner: [],
+                        snack: []
+                    },
+                    "周六": {
+                        breakfast: [],
+                        lunch: [],
+                        dinner: [],
+                        snack: []
+                    },
+                    "周日": {
+                        breakfast: [],
+                        lunch: [],
+                        dinner: [],
+                        snack: []
+                    }
+                };
+                
+                // 保存示例数据
+                const encryptedSettings = encrypt(sampleSettings);
+                const encryptedPlan = encrypt(samplePlan);
+                
+                localStorage.setItem(STORAGE_KEYS.USER_SETTINGS, encryptedSettings);
+                localStorage.setItem(STORAGE_KEYS.DIET_PLAN, encryptedPlan);
+                localStorage.setItem(STORAGE_KEYS.FIRST_LAUNCH, encrypt(false));
+                
+                output.innerHTML = `<h2>示例数据已恢复:</h2>
+                    <p>用户设置已保存</p>
+                    <p>饮食计划已保存</p>
+                    <p>首次启动标记已设置为false</p>`;
+            } catch (error) {
+                output.innerHTML = `<p>恢复示例数据时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 清空所有数据
+        function clearAllData() {
+            const output = document.getElementById('output');
+            try {
+                Object.values(STORAGE_KEYS).forEach(key => {
+                    localStorage.removeItem(key);
+                });
+                output.innerHTML = '<p>所有数据已清空</p>';
+            } catch (error) {
+                output.innerHTML = `<p>清空数据时出错: ${error.message}</p>`;
+            }
+        }
+        
+        // 页面加载时自动检查CryptoJS
+        window.addEventListener('load', () => {
+            loadCryptoJS().catch(e => {
+                document.getElementById('output').innerHTML = `<p>加载CryptoJS库失败: ${e.message}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>

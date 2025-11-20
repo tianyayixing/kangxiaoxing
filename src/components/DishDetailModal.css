@@ -1,0 +1,126 @@
+.dish-detail-modal {
+  padding: 20px;
+}
+
+.detail-header {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.detail-icon {
+  font-size: 80px;
+  margin-bottom: 15px;
+}
+
+.detail-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 10px 0;
+  color: var(--text-color);
+}
+
+.detail-category {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: var(--adm-color-primary);
+  color: white;
+  border-radius: 12px;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.detail-section {
+  margin-bottom: 25px;
+}
+
+.detail-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.nutrition-item {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+}
+
+.nutrition-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--adm-color-primary);
+  margin-bottom: 5px;
+}
+
+.nutrition-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.effect-content,
+.cooking-content,
+.tips-content {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 15px;
+  line-height: 1.6;
+}
+
+.effect-content p,
+.cooking-content p,
+.tips-content p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-item {
+  display: flex;
+  gap: 12px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--adm-color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+.detail-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
