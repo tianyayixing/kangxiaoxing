@@ -8,7 +8,7 @@ export default defineConfig({
     open: false
   },
   // base: './', // GitHub Pages 部署时需要修改为仓库名
-  base: process.env.GITHUB_PAGES ? '/diet-manager/' : './',
+  base: process.env.GITHUB_PAGES ? '/kangxiaoxing/' : './',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
