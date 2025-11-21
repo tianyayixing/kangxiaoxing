@@ -283,8 +283,6 @@ function DishManagePage({ onBack }) {
       {activeTab === 'recipes' && (
         <div className="recipes-container">
           <div className="recipes-header">
-            <h2>👩‍🍳 家常菜谱</h2>
-            <p>精选家常菜品，详细制作步骤</p>
           </div>
 
           <div className="recipe-list">

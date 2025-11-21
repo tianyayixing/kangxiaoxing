@@ -171,37 +171,37 @@
 }
 
 .recipes-container {
-  padding: 20px;
-  min-height: calc(100vh - 120px);
+  padding: 15px;
+  min-height: calc(100vh - 100px);
 }
 
 .recipes-header {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .recipes-header h2 {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--text-color);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .recipes-header p {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-secondary);
 }
 
 .recipe-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
 .recipe-card {
   cursor: pointer;
   transition: all 0.3s;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
@@ -211,19 +211,19 @@
 
 .recipe-content {
   display: flex;
-  gap: 15px;
-  padding: 15px;
+  gap: 12px;
+  padding: 12px;
 }
 
 .recipe-icon {
-  font-size: 60px;
-  width: 80px;
-  height: 80px;
+  font-size: 50px;
+  width: 70px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #f5f5f5;
-  border-radius: 12px;
+  border-radius: 10px;
   flex-shrink: 0;
 }
 
@@ -231,11 +231,11 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .recipe-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-color);
 }
@@ -243,41 +243,41 @@
 .recipe-effect {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
+  gap: 5px;
+  font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .effect-icon {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .recipe-nutrition {
   display: flex;
-  gap: 15px;
-  font-size: 13px;
+  gap: 12px;
+  font-size: 12px;
   color: var(--text-color);
 }
 
 .recipe-nutrition span {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .empty-recipes {
   text-align: center;
-  padding: 80px 20px;
+  padding: 60px 15px;
   color: var(--text-secondary);
 }
 
 .empty-recipes p {
-  font-size: 16px;
-  margin-bottom: 10px;
+  font-size: 15px;
+  margin-bottom: 8px;
 }
 
 .empty-tip {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
 }

@@ -1,27 +1,21 @@
 .app {
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  height: 100vh;
   background-color: #f5f5f5;
 }
 
 .app-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  background-color: #ffffff;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 17px;
-  font-weight: 600;
+  flex-shrink: 0;
+  background-color: #00b578;
+  color: white;
+  font-weight: bold;
 }
 
 .app-content {
   flex: 1;
   overflow-y: auto;
-  padding-top: 45px;
-  padding-bottom: 50px;
+  padding-bottom: 60px; /* 为底部导航栏留出空间 */
 }
 
 .app-tabbar {
@@ -29,6 +23,76 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #ffffff;
-  border-top: 1px solid var(--border-color);
+  height: 60px;
+  background-color: #ffffff; /* 白色背景 */
+  border-top: 1px solid #eeeeee; /* 顶部边框 */
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+
+/* 确保标签栏项目的文字清晰可见 */
+.app-tabbar .adm-tab-bar-item {
+  color: #333333; /* 深灰色文字 */
+}
+
+/* 激活状态的标签项 */
+.app-tabbar .adm-tab-bar-item-active {
+  color: #00b578; /* 使用主题绿色 */
+}
+
+/* 错误和加载状态样式 */
+.app-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  text-align: center;
+}
+
+.app-error h2 {
+  color: #ff3141;
+  margin-bottom: 10px;
+}
+
+.app-error p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.app-error button {
+  padding: 10px 20px;
+  background-color: #00b578;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.app-error button:hover {
+  background-color: #009a66;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #666;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  text-align: center;
+}
+
+.error-container p {
+  color: #ff3141;
+  margin-bottom: 20px;
 }

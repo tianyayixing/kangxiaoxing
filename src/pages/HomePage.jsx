@@ -10,13 +10,17 @@ function HomePage({ onNavigate }) {
   const [analysis, setAnalysis] = useState(null)
   const [userSettings, setUserSettings] = useState(null)
   const [currentDay, setCurrentDay] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     loadUserSettings()
   }, [])
 
   useEffect(() => {
-    loadTodayPlan()
+    if (userSettings !== null) {
+      loadTodayPlan()
+    }
   }, [userSettings])
 
   // 监听存储变化，当周计划更新时重新加载数据
@@ -35,44 +39,62 @@ function HomePage({ onNavigate }) {
   }, [userSettings])
 
   const loadUserSettings = () => {
-    const settings = storage.get(STORAGE_KEYS.USER_SETTINGS, {})
-    console.log('User settings:', settings) // 调试信息
-    setUserSettings(settings)
+    try {
+      const settings = storage.get(STORAGE_KEYS.USER_SETTINGS, {})
+      console.log('User settings:', settings) // 调试信息
+      setUserSettings(settings)
+    } catch (err) {
+      console.error('加载用户设置失败:', err)
+      setError('加载用户设置失败')
+      setUserSettings({})
+    }
   }
 
   const loadTodayPlan = () => {
-    const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    const today = days[new Date().getDay()]
-    console.log('Today:', today) // 调试信息
-    setCurrentDay(today)
-
-    const weekPlan = storage.get(STORAGE_KEYS.DIET_PLAN, {})
-    console.log('Week plan from storage:', weekPlan) // 调试信息
-    const plan = weekPlan[today] || { breakfast: [], lunch: [], dinner: [], snack: [] }
-    console.log('Today plan:', plan) // 调试信息
-    setTodayPlan(plan)
-
-    // 分析今日营养
-    const allDishes = [...plan.breakfast, ...plan.lunch, ...plan.dinner, ...plan.snack]
-    console.log('All dishes:', allDishes) // 调试信息
     try {
-      const result = NutritionAnalyzer.analyzeDailyNutrition(allDishes, userSettings)
-      console.log('Analysis result:', result) // 调试信息
-      setAnalysis(result)
-    } catch (error) {
-      console.error('营养分析失败:', error)
-      // 即使分析失败也设置一个默认的分析结果
-      setAnalysis({
-        score: 0,
-        evaluation: '暂无分析数据',
-        totalCalories: 0,
-        totalProtein: 0,
-        totalCarbs: 0,
-        proteinRatio: 0,
-        fatRatio: 0,
-        carbsRatio: 0,
-        suggestions: []
-      })
+      setLoading(true)
+      const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+      const today = days[new Date().getDay()]
+      console.log('Today:', today) // 调试信息
+      setCurrentDay(today)
+
+      const weekPlan = storage.get(STORAGE_KEYS.DIET_PLAN, {})
+      console.log('Week plan from storage:', weekPlan) // 调试信息
+      const plan = weekPlan[today] || { breakfast: [], lunch: [], dinner: [], snack: [] }
+      console.log('Today plan:', plan) // 调试信息
+      setTodayPlan(plan)
+
+      // 分析今日营养
+      const allDishes = [...plan.breakfast, ...plan.lunch, ...plan.dinner, ...plan.snack]
+      console.log('All dishes:', allDishes) // 调试信息
+      
+      // 确保用户设置已加载
+      const settings = userSettings || storage.get(STORAGE_KEYS.USER_SETTINGS, {})
+      
+      try {
+        const result = NutritionAnalyzer.analyzeDailyNutrition(allDishes, settings)
+        console.log('Analysis result:', result) // 调试信息
+        setAnalysis(result)
+      } catch (error) {
+        console.error('营养分析失败:', error)
+        // 即使分析失败也设置一个默认的分析结果
+        setAnalysis({
+          score: 0,
+          evaluation: '暂无分析数据',
+          totalCalories: 0,
+          totalProtein: 0,
+          totalCarbs: 0,
+          proteinRatio: 0,
+          fatRatio: 0,
+          carbsRatio: 0,
+          suggestions: []
+        })
+      }
+    } catch (err) {
+      console.error('加载今日计划失败:', err)
+      setError('加载今日计划失败')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -84,6 +106,27 @@ function HomePage({ onNavigate }) {
     return '#ff3141'
   }
 
+  if (loading) {
+    return (
+      <div className="home-page">
+        <div className="loading-container">
+          <p>加载中...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="home-page">
+        <div className="error-container">
+          <p>加载失败: {error}</p>
+          <Button color="primary" onClick={loadTodayPlan}>重新加载</Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="home-page">
       <div className="home-header">
@@ -92,90 +135,88 @@ function HomePage({ onNavigate }) {
       </div>
 
       <div className="content-section">
-        {(analysis || !analysis) && (
-          <Card className="nutrition-card">
-            <div className="nutrition-header">
-              <h3>营养评分</h3>
-              <div className="score-circle" style={{ borderColor: analysis ? getScoreColor(analysis.score) : '#cccccc' }}>
-                <span className="score-value">{analysis ? analysis.score : '--'}</span>
-                <span className="score-label">分</span>
+        <Card className="nutrition-card">
+          <div className="nutrition-header">
+            <h3>营养评分</h3>
+            <div className="score-circle" style={{ borderColor: analysis ? getScoreColor(analysis.score) : '#cccccc' }}>
+              <span className="score-value">{analysis ? analysis.score : '--'}</span>
+              <span className="score-label">分</span>
+            </div>
+          </div>
+          <p className="evaluation">{analysis ? analysis.evaluation : '正在加载数据...'}</p>
+          
+          <div className="nutrition-summary">
+            <div className="nutrition-item">
+              <div className="nutrition-icon">🔥</div>
+              <div className="nutrition-info">
+                <div className="nutrition-label">热量</div>
+                <div className="nutrition-value">{analysis ? `${analysis.totalCalories} kcal` : '--'}</div>
               </div>
             </div>
-            <p className="evaluation">{analysis ? analysis.evaluation : '正在加载数据...'}</p>
-            
-            <div className="nutrition-summary">
-              <div className="nutrition-item">
-                <div className="nutrition-icon">🔥</div>
-                <div className="nutrition-info">
-                  <div className="nutrition-label">热量</div>
-                  <div className="nutrition-value">{analysis ? `${analysis.totalCalories} kcal` : '--'}</div>
-                </div>
-              </div>
-              <div className="nutrition-item">
-                <div className="nutrition-icon">💪</div>
-                <div className="nutrition-info">
-                  <div className="nutrition-label">蛋白质</div>
-                  <div className="nutrition-value">{analysis ? `${analysis.totalProtein}g` : '--'}</div>
-                </div>
-              </div>
-              <div className="nutrition-item">
-                <div className="nutrition-icon">🌾</div>
-                <div className="nutrition-info">
-                  <div className="nutrition-label">碳水</div>
-                  <div className="nutrition-value">{analysis ? `${analysis.totalCarbs}g` : '--'}</div>
-                </div>
+            <div className="nutrition-item">
+              <div className="nutrition-icon">💪</div>
+              <div className="nutrition-info">
+                <div className="nutrition-label">蛋白质</div>
+                <div className="nutrition-value">{analysis ? `${analysis.totalProtein}g` : '--'}</div>
               </div>
             </div>
+            <div className="nutrition-item">
+              <div className="nutrition-icon">🌾</div>
+              <div className="nutrition-info">
+                <div className="nutrition-label">碳水</div>
+                <div className="nutrition-value">{analysis ? `${analysis.totalCarbs}g` : '--'}</div>
+              </div>
+            </div>
+          </div>
 
-            <div className="macros-chart">
-              <div className="macro-bar">
-                <span className="macro-label">蛋白质 {analysis ? `${analysis.proteinRatio || 0}%` : '0%'}</span>
-                <ProgressBar
-                  percent={analysis ? analysis.proteinRatio : 0}
-                  style={
-                    analysis ? {
-                      '--fill-color': '#00b578',
-                      '--track-width': '8px',
-                    } : {
-                      '--fill-color': '#cccccc',
-                      '--track-width': '8px',
-                    }
+          <div className="macros-chart">
+            <div className="macro-bar">
+              <span className="macro-label">蛋白质 {analysis ? `${analysis.proteinRatio || 0}%` : '0%'}</span>
+              <ProgressBar
+                percent={analysis ? analysis.proteinRatio : 0}
+                style={
+                  analysis ? {
+                    '--fill-color': '#00b578',
+                    '--track-width': '8px',
+                  } : {
+                    '--fill-color': '#cccccc',
+                    '--track-width': '8px',
                   }
-                />
-              </div>
-              <div className="macro-bar">
-                <span className="macro-label">脂肪 {analysis ? `${analysis.fatRatio || 0}%` : '0%'}</span>
-                <ProgressBar
-                  percent={analysis ? analysis.fatRatio : 0}
-                  style={
-                    analysis ? {
-                      '--fill-color': '#ff8f1f',
-                      '--track-width': '8px',
-                    } : {
-                      '--fill-color': '#cccccc',
-                      '--track-width': '8px',
-                    }
-                  }
-                />
-              </div>
-              <div className="macro-bar">
-                <span className="macro-label">碳水 {analysis ? `${analysis.carbsRatio || 0}%` : '0%'}</span>
-                <ProgressBar
-                  percent={analysis ? analysis.carbsRatio : 0}
-                  style={
-                    analysis ? {
-                      '--fill-color': '#1677ff',
-                      '--track-width': '8px',
-                    } : {
-                      '--fill-color': '#cccccc',
-                      '--track-width': '8px',
-                    }
-                  }
-                />
-              </div>
+                }
+              />
             </div>
-          </Card>
-        )}
+            <div className="macro-bar">
+              <span className="macro-label">脂肪 {analysis ? `${analysis.fatRatio || 0}%` : '0%'}</span>
+              <ProgressBar
+                percent={analysis ? analysis.fatRatio : 0}
+                style={
+                  analysis ? {
+                    '--fill-color': '#ff8f1f',
+                    '--track-width': '8px',
+                  } : {
+                    '--fill-color': '#cccccc',
+                    '--track-width': '8px',
+                  }
+                }
+              />
+            </div>
+            <div className="macro-bar">
+              <span className="macro-label">碳水 {analysis ? `${analysis.carbsRatio || 0}%` : '0%'}</span>
+              <ProgressBar
+                percent={analysis ? analysis.carbsRatio : 0}
+                style={
+                  analysis ? {
+                    '--fill-color': '#1677ff',
+                    '--track-width': '8px',
+                  } : {
+                    '--fill-color': '#cccccc',
+                    '--track-width': '8px',
+                  }
+                }
+              />
+            </div>
+          </div>
+        </Card>
       </div>
 
       <Card className="meals-card">

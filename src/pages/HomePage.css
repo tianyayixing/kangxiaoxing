@@ -247,3 +247,42 @@
   align-items: center;
   gap: 20px;
 }
+
+/* 加载和错误状态样式 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  font-size: 18px;
+  color: #666;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  padding: 20px;
+  text-align: center;
+}
+
+.error-container p {
+  color: #ff3141;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.error-container button {
+  padding: 10px 20px;
+  background-color: #00b578;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.error-container button:hover {
+  background-color: #009a66;
+}

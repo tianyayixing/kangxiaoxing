@@ -4,6 +4,27 @@
   padding: 5px 0 80px 0;
 }
 
+/* 调整设置页面列表项文字大小 */
+.settings-page .adm-list-item {
+  font-size: 14px;
+}
+
+.settings-page .adm-list-item-content {
+  font-size: 14px;
+}
+
+.settings-page .adm-list-item-content-main {
+  font-size: 14px;
+}
+
+.settings-page .adm-list-item-content-extra {
+  font-size: 13px;
+}
+
+.settings-page .adm-list-item-description {
+  font-size: 12px;
+}
+
 .settings-header {
   padding: 10px;
   background-color: white;

@@ -18,33 +18,54 @@ function App() {
   const [showDishSelection, setShowDishSelection] = useState(false)
   const [dishSelectionConfig, setDishSelectionConfig] = useState({ mealType: '', onConfirm: () => {}, activeDay: '周一' })
   const [weekPlanPageActiveDay, setWeekPlanPageActiveDay] = useState('周一')
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     console.log('App组件加载')
-    // 检查是否首次启动
-    const firstLaunch = storage.get(STORAGE_KEYS.FIRST_LAUNCH, true)
-    console.log('首次启动状态:', firstLaunch)
-    setShowOnboarding(firstLaunch)
-    
-    // 监听从菜品选择页面到菜品管理页面的导航事件
-    const handleNavigateToDishManage = () => {
-      setShowDishSelection(false)
-      setShowDishManage(true)
-    }
-    
-    window.addEventListener('navigateToDishManage', handleNavigateToDishManage)
-    
-    return () => {
-      window.removeEventListener('navigateToDishManage', handleNavigateToDishManage)
+    try {
+      // 检查是否首次启动
+      const firstLaunch = storage.get(STORAGE_KEYS.FIRST_LAUNCH, true)
+      console.log('首次启动状态:', firstLaunch)
+      setShowOnboarding(firstLaunch)
+      
+      // 监听从菜品选择页面到菜品管理页面的导航事件
+      const handleNavigateToDishManage = () => {
+        setShowDishSelection(false)
+        setShowDishManage(true)
+      }
+      
+      window.addEventListener('navigateToDishManage', handleNavigateToDishManage)
+      
+      return () => {
+        window.removeEventListener('navigateToDishManage', handleNavigateToDishManage)
+      }
+    } catch (err) {
+      console.error('App初始化错误:', err)
+      setError('应用初始化失败')
     }
   }, [])
 
   const handleOnboardingComplete = () => {
-    storage.set(STORAGE_KEYS.FIRST_LAUNCH, false)
-    setShowOnboarding(false)
+    try {
+      storage.set(STORAGE_KEYS.FIRST_LAUNCH, false)
+      setShowOnboarding(false)
+    } catch (err) {
+      console.error('完成引导页面错误:', err)
+      setError('保存设置失败')
+    }
   }
 
   console.log('App渲染状态:', { showOnboarding, showDishSelection, showDishManage, activeKey })
+
+  if (error) {
+    return (
+      <div className="app-error">
+        <h2>应用错误</h2>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>重新加载</button>
+      </div>
+    )
+  }
 
   if (showOnboarding) {
     console.log('显示引导页面')

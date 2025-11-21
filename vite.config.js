@@ -6,5 +6,19 @@ export default defineConfig({
   server: {
     port: 5173,
     open: false
+  },
+  // base: './', // GitHub Pages 部署时需要修改为仓库名
+  base: process.env.GITHUB_PAGES ? '/diet-manager/' : './',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          antd: ['antd-mobile']
+        }
+      }
+    }
   }
 })
