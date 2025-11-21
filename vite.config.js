@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     open: false
   },
-  base: process.env.GITHUB_PAGES ? '/kangxiaoxing/' : '/',
+  base: '/kangxiaoxing/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
