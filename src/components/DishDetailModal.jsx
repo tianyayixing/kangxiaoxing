@@ -75,19 +75,27 @@ function DishDetailModal({ visible, dish, onClose }) {
           </div>
         )}
 
-        {dish.steps && dish.steps.length > 0 && (
+        {/* 显示烹饪步骤 */}
+        {(dish.steps && dish.steps.length > 0) || dish.cookingMethod ? (
           <div className="detail-section">
             <h3>📝 制作步骤</h3>
             <div className="steps-list">
-              {dish.steps.map((step, index) => (
-                <div key={index} className="step-item">
-                  <div className="step-number">{index + 1}</div>
-                  <div className="step-content">{step}</div>
+              {dish.steps && dish.steps.length > 0 ? (
+                dish.steps.map((step, index) => (
+                  <div key={index} className="step-item">
+                    <div className="step-number">{index + 1}</div>
+                    <div className="step-content">{step}</div>
+                  </div>
+                ))
+              ) : (
+                <div className="step-item">
+                  <div className="step-number">1</div>
+                  <div className="step-content">{dish.cookingMethod || '暂无详细步骤'}</div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
-        )}
+        ) : null}
 
         {dish.tips && (
           <div className="detail-section">

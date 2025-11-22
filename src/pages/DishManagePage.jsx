@@ -90,6 +90,8 @@ function DishManagePage({ onBack }) {
       image: dish.image,
       cookingMethod: dish.cookingMethod,
       effect: dish.effect,
+      steps: dish.steps ? dish.steps.join('\n') : '',
+      tips: dish.tips || '',
     })
     setShowEditDish(true)
   }
@@ -145,6 +147,10 @@ function DishManagePage({ onBack }) {
           vitaminC: Math.round(nutrition.vitaminC),
           vitaminB: Math.round(nutrition.vitaminB),
           image: emoji,
+          // 为新菜品提供默认的烹饪方法和步骤模板
+          cookingMethod: getDefaultCookingMethod(category),
+          steps: getDefaultSteps(category),
+          tips: getDefaultTips(category)
         })
         Toast.clear()
         Toast.show({ icon: 'success', content: '营养信息获取成功' })
@@ -161,16 +167,22 @@ function DishManagePage({ onBack }) {
     try {
       const values = await form.validateFields()
       
+      // 处理步骤信息
+      const dishData = { ...values };
+      if (dishData.steps) {
+        dishData.steps = dishData.steps.split('\n').filter(step => step.trim() !== '');
+      }
+      
       if (showEditDish && editingDish) {
         if (editingDish.id <= 100) {
           const modifiedSystemDishes = storage.get(STORAGE_KEYS.MODIFIED_SYSTEM_DISHES, {})
-          modifiedSystemDishes[editingDish.id] = { ...editingDish, ...values }
+          modifiedSystemDishes[editingDish.id] = { ...editingDish, ...dishData }
           storage.set(STORAGE_KEYS.MODIFIED_SYSTEM_DISHES, modifiedSystemDishes)
         } else {
           const customDishes = storage.get(STORAGE_KEYS.CUSTOM_DISHES, [])
           const index = customDishes.findIndex(d => d.id === editingDish.id)
           if (index !== -1) {
-            customDishes[index] = { ...editingDish, ...values }
+            customDishes[index] = { ...editingDish, ...dishData }
             storage.set(STORAGE_KEYS.CUSTOM_DISHES, customDishes)
           }
         }
@@ -183,7 +195,7 @@ function DishManagePage({ onBack }) {
         
         const newDish = {
           id: newId,
-          ...values,
+          ...dishData,
         }
         
         customDishes.push(newDish)
@@ -196,6 +208,72 @@ function DishManagePage({ onBack }) {
     } catch (error) {
       console.error('保存失败:', error)
     }
+  }
+
+  // 根据分类获取默认烹饪方法
+  const getDefaultCookingMethod = (category) => {
+    const methods = {
+      '家常菜': '炒制',
+      '蔬菜': '快炒',
+      '肉类': '炒制',
+      '海鲜': '蒸煮',
+      '汤类': '炖煮',
+      '粥': '煮制',
+      '主食': '蒸煮',
+      '凉菜': '凉拌',
+      '沙拉': '拌制',
+      '水果': '直接食用',
+      '饮品': '冲泡',
+      '甜品': '制作',
+      '坚果': '直接食用',
+      '菌菇': '炒制',
+      '豆制品': '炒制'
+    }
+    return methods[category] || '制作'
+  }
+
+  // 根据分类获取默认步骤
+  const getDefaultSteps = (category) => {
+    const steps = {
+      '家常菜': '1. 准备食材\n2. 清洗处理\n3. 切配食材\n4. 调料准备\n5. 烹饪制作\n6. 装盘完成',
+      '蔬菜': '1. 蔬菜清洗\n2. 切配处理\n3. 热锅下油\n4. 快速翻炒\n5. 调味出锅',
+      '肉类': '1. 肉类处理\n2. 腌制入味\n3. 热锅烹饪\n4. 调味收汁\n5. 装盘完成',
+      '海鲜': '1. 海鲜处理\n2. 腌制去腥\n3. 蒸煮烹饪\n4. 调味装盘',
+      '汤类': '1. 食材准备\n2. 焯水处理\n3. 加水炖煮\n4. 调味完成',
+      '粥': '1. 米粒清洗\n2. 加水煮制\n3. 小火慢煮\n4. 调味完成',
+      '主食': '1. 食材准备\n2. 蒸煮制作\n3. 调味完成',
+      '凉菜': '1. 食材处理\n2. 调料准备\n3. 拌制均匀\n4. 装盘完成',
+      '沙拉': '1. 食材清洗\n2. 切配处理\n3. 调料拌制\n4. 装盘完成',
+      '水果': '1. 水果清洗\n2. 去皮切块\n3. 装盘食用',
+      '饮品': '1. 食材准备\n2. 冲泡制作\n3. 调味完成',
+      '甜品': '1. 食材准备\n2. 制作处理\n3. 装盘完成',
+      '坚果': '直接食用',
+      '菌菇': '1. 菌菇处理\n2. 热锅炒制\n3. 调味出锅',
+      '豆制品': '1. 豆制品处理\n2. 热锅炒制\n3. 调味出锅'
+    }
+    return steps[category] || '1. 准备食材\n2. 烹饪制作\n3. 装盘完成'
+  }
+
+  // 根据分类获取默认小贴士
+  const getDefaultTips = (category) => {
+    const tips = {
+      '家常菜': '注意火候控制，保持食材营养',
+      '蔬菜': '大火快炒，保持蔬菜脆嫩',
+      '肉类': '腌制入味，掌握火候',
+      '海鲜': '去腥提鲜，保持原味',
+      '汤类': '小火慢炖，汤鲜味美',
+      '粥': '米水比例，小火慢煮',
+      '主食': '掌握时间，口感软糯',
+      '凉菜': '卫生处理，调味适中',
+      '沙拉': '食材新鲜，搭配均衡',
+      '水果': '选择时令，营养丰富',
+      '饮品': '温度适宜，口感清香',
+      '甜品': '甜度适中，不宜过量',
+      '坚果': '适量食用，营养丰富',
+      '菌菇': '充分清洗，去除杂质',
+      '豆制品': '新鲜制作，口感嫩滑'
+    }
+    return tips[category] || '注意食材搭配，营养均衡'
   }
 
   return (
@@ -380,6 +458,12 @@ function DishManagePage({ onBack }) {
             <Form.Item name="effect" label="功效">
               <Input placeholder="例如：补钙、促进消化等" />
             </Form.Item>
+            <Form.Item name="steps" label="制作步骤">
+              <Input.TextArea placeholder="请输入制作步骤，每行一个步骤" autoSize={{ minRows: 3, maxRows: 6 }} />
+            </Form.Item>
+            <Form.Item name="tips" label="小贴士">
+              <Input placeholder="例如：烹饪技巧、注意事项等" />
+            </Form.Item>
           </Form>
 
           <div className="popup-footer">
@@ -439,6 +523,12 @@ function DishManagePage({ onBack }) {
             </Form.Item>
             <Form.Item name="effect" label="功效">
               <Input placeholder="例如：补钙、促进消化等" />
+            </Form.Item>
+            <Form.Item name="steps" label="制作步骤">
+              <Input.TextArea placeholder="请输入制作步骤，每行一个步骤" autoSize={{ minRows: 3, maxRows: 6 }} />
+            </Form.Item>
+            <Form.Item name="tips" label="小贴士">
+              <Input placeholder="例如：烹饪技巧、注意事项等" />
             </Form.Item>
           </Form>
 
