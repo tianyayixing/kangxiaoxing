@@ -181,13 +181,6 @@ function SettingsPage({ onNavigateToDishManage }) {
 
       <List header="应用设置">
         <List.Item
-          prefix="🍳"
-          onClick={onNavigateToDishManage}
-          clickable
-        >
-          菜品管理
-        </List.Item>
-        <List.Item
           prefix="🔔"
           extra={
             <Switch 
@@ -222,6 +215,13 @@ function SettingsPage({ onNavigateToDishManage }) {
           clickable
         >
           导出数据
+        </List.Item>
+        <List.Item
+          prefix="🍽️"
+          onClick={onNavigateToDishManage}
+          clickable
+        >
+          菜品管理
         </List.Item>
         <List.Item
           prefix="🗑️"

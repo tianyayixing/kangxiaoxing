@@ -11,6 +11,9 @@ import { storage, STORAGE_KEYS } from './utils/storage'
 import DishSelectionPage from './pages/DishSelectionPage'
 import './App.css'
 
+// 添加一个明显的标识来确认这个文件正在被使用
+console.log('=== App.jsx 文件已加载 ===')
+
 function App() {
   const [activeKey, setActiveKey] = useState('home')
   const [showOnboarding, setShowOnboarding] = useState(false)
@@ -22,6 +25,8 @@ function App() {
 
   useEffect(() => {
     console.log('App组件加载')
+    // 添加一个明显的调试信息
+    console.log('=== 康小星健康管理应用启动 ===')
     try {
       // 检查是否首次启动
       const firstLaunch = storage.get(STORAGE_KEYS.FIRST_LAUNCH, true)

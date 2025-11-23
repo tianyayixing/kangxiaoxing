@@ -159,11 +159,19 @@ function OnboardingPage({ onComplete }) {
     <div className="onboarding-page">
       <div className="onboarding-header">
         <h1>欢迎使用康小星</h1>
-        <Stepper current={step}>
-          <Stepper.Item title="饮食习惯" />
-          <Stepper.Item title="饮食目标" />
-          <Stepper.Item title="健康状况" />
-        </Stepper>
+        <div className="step-indicator">
+          {[0, 1, 2].map((index) => (
+            <span 
+              key={index} 
+              className={`step-dot ${step === index ? 'active' : ''}`}
+            />
+          ))}
+        </div>
+        <div className="step-text">
+          {step === 0 && '饮食习惯'}
+          {step === 1 && '饮食目标'}
+          {step === 2 && '健康状况'}
+        </div>
       </div>
       
       <div className="onboarding-content">
